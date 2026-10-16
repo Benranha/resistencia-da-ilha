@@ -3,7 +3,12 @@
   const $ = (id) => document.getElementById(id);
   const screens = { menu: $('screen-menu'), lobby: $('screen-lobby'), game: $('screen-game') };
   const ROLE_NAMES = { resistencia: 'Resistência', capitao: 'Capitão', medico: 'Médico', guarda: 'Guarda', sabotador: 'Sabotador', tropa: 'Tropa' };
-  const ICON = { piece: '🗺️', key: '🗝️', kit: '🧰', radio: '📻' };
+  const ICON = { piece: '/art/peca-mapa.svg', key: '/art/chave.svg', kit: '/art/kit-medico.svg', radio: '/art/radio.svg' };
+  const ART = {};
+  for (const n of ['peca-mapa', 'chave', 'kit-medico', 'radio', 'bote', 'cofre', 'bussola', 'tiro', 'tiro-gasto', 'corpo', 'corrente', 'impacto', 'sino', 'passos']) { const im = new Image(); im.src = `/art/${n}.svg`; ART[n] = im; }
+  const FX_ART = { shot: 'impacto', clank: 'sino', steps: 'passos' };
+  const ITEM_ART = { piece: 'peca-mapa', key: 'chave', kit: 'kit-medico', radio: 'radio' };
+  function drawArt(name, x, y, size) { const im = ART[name]; if (im && im.complete && im.naturalWidth) ctx.drawImage(im, x - size / 2, y - size / 2, size, size); }
   const ITEM_LABEL = { piece: 'Peça do mapa', key: 'Chave do bote', kit: 'Kit médico', radio: 'Rádio quebrado' };
 
   let ws = null;
@@ -139,7 +144,7 @@
 
   // ---------- jogo ----------
   function startGame(m) {
-    map = m.map; names = m.names || {}; consts = m.map.consts || {};
+    map = m.map; terrain = null; names = m.names || {}; consts = m.map.consts || {};
     S.phase = 'playing'; snap = null; ents.clear(); ripples = []; bubbles = [];
     $('end-card').hidden = true; $('hud-log').innerHTML = ''; meP = { x: 0, y: 0 };
     $('hud-keys').textContent = 'E pegar/usar   G entregar   Q habilidade   R rádio   Shift correr   Enter conversar';
@@ -174,8 +179,8 @@
     $('hud-storm').hidden = !m.storm;
     const st = $('hud-stamina'); st.firstElementChild.style.width = m.me.stamina + '%'; st.classList.toggle('low', m.me.exhausted);
     const inv = $('hud-inv'); inv.innerHTML = '';
-    for (const it of m.me.inv) { const s = document.createElement('span'); s.textContent = ICON[it.type]; s.title = ITEM_LABEL[it.type]; inv.appendChild(s); }
-    if (role === 'guarda') { const s = document.createElement('span'); s.textContent = m.me.shotUsed ? '🚫' : '🔫'; s.title = 'Tiro (Q)'; inv.appendChild(s); }
+    for (const it of m.me.inv) { const s = document.createElement('img'); s.src = ICON[it.type]; s.alt = ''; s.title = ITEM_LABEL[it.type]; inv.appendChild(s); }
+    if (role === 'guarda') { const s = document.createElement('img'); s.src = m.me.shotUsed ? '/art/tiro-gasto.svg' : '/art/tiro.svg'; s.alt = ''; s.title = 'Tiro (Q)'; inv.appendChild(s); }
     if (m.me.cd > 0) { const s = document.createElement('span'); s.textContent = `Q ${m.me.cd}s`; s.style.fontSize = '13px'; inv.appendChild(s); }
     const h = $('hud-hint'); h.style.display = m.me.hint && m.me.alive ? 'block' : 'none'; h.textContent = m.me.hint;
     const pr = $('hud-prog'); pr.hidden = !(m.me.prog > 0); pr.firstElementChild.style.width = Math.round(m.me.prog * 100) + '%';
@@ -332,14 +337,53 @@
 
   function hue(id) { return (id * 47) % 360; }
 
+  // Camada de terreno pre-renderizada (estilo da identidade: bordas organicas, contorno de tinta, graos)
+  let terrain = null;
+  function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function blobPath(c, z, r) {
+    const pts = []; const step = 60; const amp = 16;
+    const edge = (x0, y0, x1, y1) => { const n = Math.max(1, Math.round(Math.hypot(x1 - x0, y1 - y0) / step)); for (let i = 0; i < n; i++) { const u = i / n; const nx = -(y1 - y0), ny = x1 - x0; const l = Math.hypot(nx, ny) || 1; const o = (r() - 0.5) * 2 * amp; pts.push([x0 + (x1 - x0) * u + nx / l * o, y0 + (y1 - y0) * u + ny / l * o]); } };
+    edge(z.x, z.y, z.x + z.w, z.y); edge(z.x + z.w, z.y, z.x + z.w, z.y + z.h); edge(z.x + z.w, z.y + z.h, z.x, z.y + z.h); edge(z.x, z.y + z.h, z.x, z.y);
+    c.beginPath(); const n = pts.length;
+    for (let i = 0; i < n; i++) { const p0 = pts[i], p1 = pts[(i + 1) % n]; const mx = (p0[0] + p1[0]) / 2, my = (p0[1] + p1[1]) / 2; if (i === 0) c.moveTo(mx, my); const p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n]; c.quadraticCurveTo(p2[0], p2[1], (p2[0] + p3[0]) / 2, (p2[1] + p3[1]) / 2); }
+    c.closePath();
+  }
+  function buildTerrain() {
+    const wd = map.world; const cv = document.createElement('canvas'); cv.width = wd.w; cv.height = wd.h; const c = cv.getContext('2d'); const r = rng(20261016);
+    c.fillStyle = map.defaultZone.color; c.fillRect(0, 0, wd.w, wd.h);
+    for (const z of map.zones) { blobPath(c, z, r); c.fillStyle = z.color; c.fill(); c.lineWidth = 5; c.strokeStyle = 'rgba(42,29,15,0.28)'; c.stroke(); }
+    // graos e tufos por zona
+    for (const z of map.zones) {
+      const rocky = z.terrain === 'rock'; const n = Math.round(z.w * z.h / 5200);
+      for (let i = 0; i < n; i++) {
+        const x = z.x + r() * z.w, y = z.y + r() * z.h; c.globalAlpha = 0.18 + r() * 0.15;
+        c.fillStyle = r() < 0.5 ? '#2a1d0f' : '#fff6d8';
+        if (rocky) { c.fillRect(x, y, 3 + r() * 4, 2 + r() * 3); } else { c.beginPath(); c.arc(x, y, 1 + r() * 2, 0, 7); c.fill(); }
+      }
+    }
+    c.globalAlpha = 0.16; c.strokeStyle = '#2a1d0f'; c.lineWidth = 2; c.lineCap = 'round';
+    for (let i = 0; i < 240; i++) { const x = r() * wd.w, y = r() * wd.h; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 6, y - 9); c.moveTo(x + 6, y); c.lineTo(x + 9, y - 8); c.stroke(); }
+    c.globalAlpha = 1;
+    // nomes
+    c.fillStyle = 'rgba(42,29,15,0.34)'; c.font = 'italic 700 38px Fraunces, Georgia, serif'; c.textAlign = 'center';
+    for (const z of map.zones) c.fillText(z.name, z.x + z.w / 2, z.y + 56);
+    // arvores e pedras com contorno de tinta
+    for (const o of map.obstacles) {
+      const rocky = o.x > 1500 && o.y > 0 && (o.x > 1700 || o.y > 900);
+      c.fillStyle = 'rgba(42,29,15,0.25)'; c.beginPath(); c.ellipse(o.x + 7, o.y + 10, o.r, o.r * 0.8, 0, 0, 7); c.fill();
+      c.lineWidth = 4; c.strokeStyle = '#2a1d0f';
+      c.fillStyle = rocky ? '#6d6a60' : '#3e7a4a'; c.beginPath();
+      if (rocky) { for (let k = 0; k < 8; k++) { const a = k / 8 * 6.283, rr = o.r * (0.86 + r() * 0.2); const px = o.x + Math.cos(a) * rr, py = o.y + Math.sin(a) * rr; k ? c.lineTo(px, py) : c.moveTo(px, py); } c.closePath(); } else { c.arc(o.x, o.y, o.r, 0, 7); }
+      c.fill(); c.stroke();
+      c.fillStyle = rocky ? '#98937f' : '#5aa166'; c.beginPath(); c.arc(o.x - o.r * 0.28, o.y - o.r * 0.28, o.r * 0.5, 0, 7); c.fill();
+    }
+    terrain = cv;
+  }
+
   function drawWorld(camX, camY, t) {
     const wd = map.world;
-    ctx.fillStyle = map.defaultZone.color; ctx.fillRect(0, 0, wd.w, wd.h);
-    for (const z of map.zones) { ctx.fillStyle = z.color; ctx.fillRect(z.x, z.y, z.w, z.h); }
-    // textura simples
-    ctx.globalAlpha = 0.07; ctx.fillStyle = '#000';
-    for (let gx = 0; gx < wd.w; gx += 120) for (let gy = 0; gy < wd.h; gy += 120) { if (((gx + gy) / 120) % 2 === 0) ctx.fillRect(gx, gy, 120, 120); }
-    ctx.globalAlpha = 1;
+    if (!terrain) buildTerrain();
+    ctx.drawImage(terrain, 0, 0);
     // agua
     const wl = snap ? snap.water : wd.h - 60;
     const grad = ctx.createLinearGradient(0, wl - 40, 0, wl + 30);
@@ -350,19 +394,8 @@
     ctx.beginPath();
     for (let x = 0; x <= wd.w; x += 40) { const y = wl + Math.sin(x * 0.03 + t * 2) * 4; if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
     ctx.stroke();
-    // nomes de regioes
-    ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.font = '700 34px Georgia, serif'; ctx.textAlign = 'center';
-    for (const z of map.zones) ctx.fillText(z.name, z.x + z.w / 2, z.y + 50);
-    // obstaculos
-    for (const o of map.obstacles) {
-      const rocky = o.x > 1500 && o.y > 0 && (o.x > 1700 || o.y > 900);
-      ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(o.x + 6, o.y + 8, o.r, o.r * 0.8, 0, 0, 7); ctx.fill();
-      ctx.fillStyle = rocky ? '#7c786d' : '#3e7a4a'; ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, 7); ctx.fill();
-      ctx.fillStyle = rocky ? '#98937f' : '#52965c'; ctx.beginPath(); ctx.arc(o.x - o.r * 0.25, o.y - o.r * 0.25, o.r * 0.55, 0, 7); ctx.fill();
-    }
   }
 
-  function drawEmoji(ch, x, y, size) { ctx.font = `${size}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(ch, x, y); }
 
   function drawPlayer(x, y, f, id, label, isMe, roleKey) {
     ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(x, y + 10, 14, 7, 0, 0, 7); ctx.fill();
@@ -397,10 +430,10 @@
     if (snap.passage) {
       for (const p of [snap.passage.a, snap.passage.b]) { ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.beginPath(); ctx.arc(p.x, p.y, 26, 0, 7); ctx.fill(); ctx.strokeStyle = '#e2574c'; ctx.lineWidth = 3; ctx.setLineDash([6, 5]); ctx.stroke(); ctx.setLineDash([]); }
     }
-    for (const b of snap.boats) drawEmoji('⛵', b.x, b.y, 44);
-    if (snap.safe) drawEmoji(snap.safe.open ? '🔓' : snap.safe.locked ? '⛓️' : '🔒', snap.safe.x, snap.safe.y, 36);
-    for (const it of snap.it) { ctx.fillStyle = 'rgba(255,230,150,0.25)'; ctx.beginPath(); ctx.arc(it.x, it.y, 20 + Math.sin(t * 3) * 2, 0, 7); ctx.fill(); drawEmoji(ICON[it.type] || '?', it.x, it.y, 26); }
-    for (const b of snap.bd) drawEmoji('💀', b.x, b.y, 26);
+    for (const b of snap.boats) drawArt('bote', b.x, b.y, 64);
+    if (snap.safe) { ctx.globalAlpha = snap.safe.open ? 0.55 : 1; drawArt('cofre', snap.safe.x, snap.safe.y, 52); ctx.globalAlpha = 1; if (snap.safe.locked) drawArt('corrente', snap.safe.x, snap.safe.y + 4, 56); }
+    for (const it of snap.it) { ctx.fillStyle = 'rgba(255,230,150,0.25)'; ctx.beginPath(); ctx.arc(it.x, it.y, 20 + Math.sin(t * 3) * 2, 0, 7); ctx.fill(); drawArt(ITEM_ART[it.type], it.x, it.y, 34); }
+    for (const b of snap.bd) drawArt('corpo', b.x, b.y, 34);
 
     // cone de mira do Guarda
     if (role === 'guarda' && !snap.me.shotUsed && snap.me.alive) {
@@ -421,7 +454,7 @@
     for (const r of ripples) {
       const col = r.kind === 'shot' ? '226,87,76' : r.kind === 'clank' ? '232,184,74' : '255,255,255';
       ctx.strokeStyle = `rgba(${col},${1 - r.t / 1.4})`; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(r.x, r.y, 20 + r.t * 90, 0, 7); ctx.stroke();
-      drawEmoji(r.kind === 'shot' ? '💥' : r.kind === 'clank' ? '🔔' : '👣', r.x, r.y, 22);
+      drawArt(FX_ART[r.kind] || 'passos', r.x, r.y, 30);
     }
     // waypoint do Capitao
     if (snap.waypoint) {

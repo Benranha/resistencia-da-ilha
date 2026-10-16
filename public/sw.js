@@ -1,8 +1,8 @@
 'use strict';
 // Service worker: guarda a casca do app para abrir rápido e instalar como PWA.
 // O jogo em si precisa de internet (WebSocket), então só os arquivos estáticos são cacheados.
-const CACHE = 'rdi-v1';
-const SHELL = ['/', '/index.html', '/style.css', '/client.js', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png'];
+const CACHE = 'rdi-v3';
+const SHELL = ['/', '/index.html', '/style.css', '/client.js', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/art/peca-mapa.svg', '/art/chave.svg', '/art/kit-medico.svg', '/art/radio.svg', '/art/bote.svg', '/art/cofre.svg', '/art/bussola.svg', '/art/tiro.svg', '/art/tiro-gasto.svg', '/art/corpo.svg', '/art/corrente.svg', '/art/impacto.svg', '/art/sino.svg', '/art/passos.svg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

@@ -9,6 +9,7 @@ juntar o mapa, abrir o cofre e escapar de bote com o Capitão, enquanto Tropas e
 ```bash
 npm install
 npm start          # http://localhost:3000
+npm run dev        # reinicia ao salvar
 npm test           # regras do jogo + teste de conexão WebSocket
 ```
 
@@ -66,6 +67,8 @@ src/game.js      regras do jogo e bots (lógica pura, testável sem rede)
 src/server.js    HTTP estático + WebSocket + salas
 public/          cliente (Canvas), PWA (manifest, service worker, ícones)
 test/            testes de regras, simulação com bots e teste de ponta a ponta
+docs/            identidade visual e tokens de design
+public/art/      ícones SVG do jogo
 ```
 
 O servidor é autoritativo: o cliente só envia entradas (`in`, `act`, `chat`) e desenha os snapshots recebidos a 20 Hz.
@@ -77,7 +80,7 @@ mas o jogo precisa de internet. Para instalar fora de localhost é preciso servi
 
 ## Publicar
 
-O servidor precisa de conexão WebSocket persistente. Use Render, Railway ou Fly.io (`npm start`, porta pela variável `PORT`).
+O servidor precisa de conexão WebSocket persistente. Use Render (já há `render.yaml`), Railway ou Fly.io (há `Dockerfile`; porta pela variável `PORT`, health check em `/healthz`).
 A Vercel serve bem os arquivos de `public/`, mas não mantém o WebSocket do servidor de jogo.
 
 ## Próximos passos sugeridos

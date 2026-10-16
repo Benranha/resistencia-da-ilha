@@ -1,0 +1,483 @@
+{
+ "name": "A Resistência da Ilha",
+ "version": 1,
+ "color": {
+  "themes": [
+   {
+    "id": "noite",
+    "name": "Noite"
+   },
+   {
+    "id": "dia",
+    "name": "Dia"
+   }
+  ],
+  "tokens": [
+   {
+    "name": "fundo",
+    "value": {
+     "noite": "#0a1a22",
+     "dia": "#efe0bb"
+    },
+    "usage": "Fundo de tela do menu, lobby e HUD. Texto `texto` e `texto-suave` sobre ele."
+   },
+   {
+    "name": "superficie",
+    "value": {
+     "noite": "#12303c",
+     "dia": "#f7ecd0"
+    },
+    "usage": "Cartões, painéis e campos de texto sobre `fundo`. Texto `texto` e `texto-suave` sobre ela."
+   },
+   {
+    "name": "superficie-alta",
+    "value": {
+     "noite": "#1b4352",
+     "dia": "#e4d1a0"
+    },
+    "usage": "Botões secundários, slots de inventário e itens elevados sobre `superficie`. Texto `texto`."
+   },
+   {
+    "name": "vidro",
+    "value": {
+     "noite": "rgba(10,26,34,0.78)",
+     "dia": "rgba(247,236,208,0.85)"
+    },
+    "usage": "Pílulas e avisos do HUD sobre o mapa. Texto `texto` apenas."
+   },
+   {
+    "name": "linha",
+    "value": {
+     "noite": "#2f5564",
+     "dia": "#cdb683"
+    },
+    "usage": "Filetes e divisões decorativas de 1px. Não carrega significado."
+   },
+   {
+    "name": "linha-forte",
+    "value": {
+     "noite": "#5f8a99",
+     "dia": "#8a6f3c"
+    },
+    "usage": "Borda de botões, campos e slots. Contraste mínimo de 3:1 contra `superficie` em ambos os temas."
+   },
+   {
+    "name": "texto",
+    "value": {
+     "noite": "#f1e6c8",
+     "dia": "#2a1d0f"
+    },
+    "usage": "Texto principal sobre `fundo`, `superficie`, `superficie-alta` e `vidro`."
+   },
+   {
+    "name": "texto-suave",
+    "value": {
+     "noite": "#a9b9b4",
+     "dia": "#5c4a30"
+    },
+    "usage": "Texto secundário, legendas e dicas de teclas sobre `fundo` e `superficie`."
+   },
+   {
+    "name": "brasa",
+    "value": {
+     "noite": "#e8803f",
+     "dia": "#b8531a"
+    },
+    "usage": "Cor de ação: botão primário, botão E de toque, progresso de arrombar e embarcar. Texto sobre ela usa `on-brasa`."
+   },
+   {
+    "name": "on-brasa",
+    "value": {
+     "noite": "#1a0f07",
+     "dia": "#fff6e0"
+    },
+    "usage": "Texto e ícones sobre fundo `brasa`."
+   },
+   {
+    "name": "mare",
+    "value": {
+     "noite": "#3fa6b8",
+     "dia": "#14677a"
+    },
+    "usage": "Facção Resistência, links e realces de água. Em texto, apenas sobre `fundo` e `superficie`."
+   },
+   {
+    "name": "folha",
+    "value": {
+     "noite": "#6fc48f",
+     "dia": "#2a6f42"
+    },
+    "usage": "Sucesso (item pego, partida ganha) e estamina cheia sobre `fundo` e `superficie`. Sempre acompanhada de palavra."
+   },
+   {
+    "name": "coral",
+    "value": {
+     "noite": "#ec6a5e",
+     "dia": "#a8322a"
+    },
+    "usage": "Facção Tropas, perigo e exaustão sobre `fundo` e `superficie`. Sempre acompanhada de palavra ou ícone."
+   },
+   {
+    "name": "on-coral",
+    "value": {
+     "noite": "#1a0f07",
+     "dia": "#fff6e0"
+    },
+    "usage": "Texto e ícones sobre fundo `coral`."
+   },
+   {
+    "name": "ouro",
+    "value": {
+     "noite": "#e9bd55",
+     "dia": "#8a6410"
+    },
+    "usage": "Orientação: waypoint do Capitão, bússola, cronômetro em alerta e anel de foco, sobre `fundo` e `superficie`."
+   },
+   {
+    "name": "focus",
+    "value": "{ouro}",
+    "usage": "Anel de foco de 3px. Contraste mínimo de 3:1 contra `fundo`, `superficie` e `superficie-alta` em ambos os temas."
+   },
+   {
+    "name": "faccao-resistencia",
+    "value": "{mare}",
+    "usage": "Rótulo e contorno da facção Resistência. Sempre acompanhado do nome do papel."
+   },
+   {
+    "name": "faccao-tropas",
+    "value": "{coral}",
+    "usage": "Rótulo e contorno da facção Tropas. Sempre acompanhado do nome do papel."
+   },
+   {
+    "name": "papel",
+    "value": "#f1e4c3",
+    "usage": "Superfície de documento nos dois temas: peças do Mapa Roto, cartão de papel. Texto `tinta`, `tinta-suave`, `tinta-mare`, `tinta-brasa` ou `tinta-coral`."
+   },
+   {
+    "name": "tinta",
+    "value": "#2a1d0f",
+    "usage": "Texto e contornos sobre `papel`. Também o contorno de 2,5px dos ícones e do mapa."
+   },
+   {
+    "name": "tinta-suave",
+    "value": "#5c4a30",
+    "usage": "Texto secundário sobre `papel`."
+   },
+   {
+    "name": "tinta-mare",
+    "value": "#14677a",
+    "usage": "Texto de facção Resistência sobre `papel`."
+   },
+   {
+    "name": "tinta-brasa",
+    "value": "#b8531a",
+    "usage": "Texto de destaque e marcações (X do mapa) sobre `papel`."
+   },
+   {
+    "name": "tinta-coral",
+    "value": "#a8322a",
+    "usage": "Texto de facção Tropas sobre `papel`."
+   },
+   {
+    "name": "areia",
+    "value": "#e3cf9a",
+    "usage": "Terreno: Praia da Barra. Correr aqui gasta 30% mais estamina."
+   },
+   {
+    "name": "duna",
+    "value": "#d9b877",
+    "usage": "Terreno: Dunas."
+   },
+   {
+    "name": "sambaqui",
+    "value": "#cdb98a",
+    "usage": "Terreno: Sambaquis."
+   },
+   {
+    "name": "mata",
+    "value": "#2f5d3a",
+    "usage": "Terreno: mata e vegetação firme entre as zonas."
+   },
+   {
+    "name": "rocha",
+    "value": "#6d6a60",
+    "usage": "Terreno: Morro do Índio. Pedras e obstáculos."
+   },
+   {
+    "name": "rocha-luz",
+    "value": "#98937f",
+    "usage": "Luz do sombreado das pedras, sobre `rocha`."
+   },
+   {
+    "name": "rocha-ponta",
+    "value": "#5a5750",
+    "usage": "Terreno: Rochas da Ponta, que a maré alaga primeiro."
+   },
+   {
+    "name": "agua",
+    "value": "#185f87",
+    "usage": "Mar e água acima da linha da maré."
+   },
+   {
+    "name": "agua-rasa",
+    "value": "#3a8fb0",
+    "usage": "Águas rasas junto à costa."
+   },
+   {
+    "name": "espuma",
+    "value": "#e9f4f2",
+    "usage": "Espuma da costa e cristas de onda sobre `agua`."
+   },
+   {
+    "name": "folhagem",
+    "value": "#3e7a4a",
+    "usage": "Copas de árvores e arbustos."
+   },
+   {
+    "name": "folhagem-luz",
+    "value": "#52965c",
+    "usage": "Luz do sombreado da folhagem, sobre `folhagem`."
+   },
+   {
+    "name": "nevoa",
+    "value": "rgba(4,10,14,0.96)",
+    "usage": "Escuridão fora do raio de visão do jogador."
+   },
+   {
+    "name": "funcao-resistencia",
+    "value": {
+     "noite": "#1B2A4A",
+     "dia": "#1B2A4A"
+    },
+    "usage": "Fundo do emblema da Resistência. Só para medalhões, igual nos dois temas."
+   },
+   {
+    "name": "funcao-capitao",
+    "value": {
+     "noite": "#121c30",
+     "dia": "#121c30"
+    },
+    "usage": "Fundo do emblema do Capitão. Só para medalhões, igual nos dois temas."
+   },
+   {
+    "name": "funcao-medico",
+    "value": {
+     "noite": "#2E8B57",
+     "dia": "#2E8B57"
+    },
+    "usage": "Fundo do emblema do Médico. Só para medalhões, igual nos dois temas."
+   },
+   {
+    "name": "funcao-guarda",
+    "value": {
+     "noite": "#708090",
+     "dia": "#708090"
+    },
+    "usage": "Fundo do emblema do Guarda. Só para medalhões, igual nos dois temas."
+   },
+   {
+    "name": "funcao-sabotador",
+    "value": {
+     "noite": "#3b2457",
+     "dia": "#3b2457"
+    },
+    "usage": "Fundo do emblema do Sabotador. Só para medalhões, igual nos dois temas."
+   },
+   {
+    "name": "funcao-tropas",
+    "value": {
+     "noite": "#8B0000",
+     "dia": "#8B0000"
+    },
+    "usage": "Fundo do emblema das Tropas. Só para medalhões, igual nos dois temas."
+   }
+  ]
+ },
+ "type": {
+  "fonts": [],
+  "families": {
+   "display": "\"Fraunces\", Georgia, \"Times New Roman\", serif",
+   "sans": "\"Atkinson Hyperlegible\", system-ui, -apple-system, \"Segoe UI\", sans-serif"
+  },
+  "groups": [
+   {
+    "name": "Títulos",
+    "family": "display",
+    "styles": [
+     {
+      "name": "titulo-1",
+      "fontSize": "48px",
+      "lineHeight": "50px",
+      "fontWeight": 700,
+      "opticalSize": 144,
+      "sample": "A Resistência da Ilha",
+      "usage": "Nome do jogo e título do menu."
+     },
+     {
+      "name": "titulo-2",
+      "fontSize": "32px",
+      "lineHeight": "36px",
+      "fontWeight": 650,
+      "opticalSize": 72,
+      "sample": "Capitão",
+      "usage": "Nome do papel no cartão, título do fim de partida, código da sala."
+     },
+     {
+      "name": "titulo-3",
+      "fontSize": "22px",
+      "lineHeight": "26px",
+      "fontWeight": 600,
+      "opticalSize": 36,
+      "sample": "Praia da Barra",
+      "usage": "Títulos de seção e nomes de regiões."
+     }
+    ]
+   },
+   {
+    "name": "Texto e HUD",
+    "family": "sans",
+    "styles": [
+     {
+      "name": "corpo",
+      "fontSize": "16px",
+      "lineHeight": "24px",
+      "fontWeight": 400,
+      "sample": "Reúna as 3 peças do mapa para ver o bote na bússola.",
+      "usage": "Texto corrido, descrições de papel, campos."
+     },
+     {
+      "name": "corpo-pequeno",
+      "fontSize": "14px",
+      "lineHeight": "20px",
+      "fontWeight": 400,
+      "sample": "Segure E para arrombar o cofre.",
+      "usage": "Dicas, avisos do HUD, texto secundário."
+     },
+     {
+      "name": "rotulo",
+      "fontSize": "13px",
+      "lineHeight": "16px",
+      "fontWeight": 700,
+      "letterSpacing": "0.06em",
+      "sample": "VOCÊ É DA RESISTÊNCIA",
+      "usage": "Sobrelinhas e rótulos curtos, em caixa alta. Máximo de 3 palavras."
+     },
+     {
+      "name": "botao",
+      "fontSize": "15px",
+      "lineHeight": "20px",
+      "fontWeight": 700,
+      "sample": "Criar sala",
+      "usage": "Texto de botões."
+     },
+     {
+      "name": "hud-num",
+      "fontSize": "20px",
+      "lineHeight": "24px",
+      "fontWeight": 700,
+      "sample": "9:58",
+      "usage": "Cronômetro, contagem de vivos e recarga de habilidade."
+     }
+    ]
+   }
+  ]
+ },
+ "spacing": {
+  "tokens": [
+   {
+    "name": "espaco-1",
+    "value": "4px",
+    "usage": "Espaço entre ícone e rótulo."
+   },
+   {
+    "name": "espaco-2",
+    "value": "8px",
+    "usage": "Espaço entre itens de inventário e entre pílulas do HUD."
+   },
+   {
+    "name": "espaco-3",
+    "value": "12px",
+    "usage": "Padding vertical de botões e campos."
+   },
+   {
+    "name": "espaco-4",
+    "value": "16px",
+    "usage": "Margem lateral mínima em telas pequenas e padding de avisos."
+   },
+   {
+    "name": "espaco-6",
+    "value": "24px",
+    "usage": "Padding de cartões."
+   },
+   {
+    "name": "espaco-8",
+    "value": "32px",
+    "usage": "Espaço entre blocos de um cartão."
+   },
+   {
+    "name": "espaco-12",
+    "value": "48px",
+    "usage": "Espaço entre seções de uma tela."
+   },
+   {
+    "name": "alvo-toque",
+    "value": "44px",
+    "usage": "Tamanho mínimo de qualquer alvo clicável."
+   },
+   {
+    "name": "botao-toque",
+    "value": "62px",
+    "usage": "Diâmetro dos botões de ação do controle de toque."
+   }
+  ]
+ },
+ "radius": {
+  "tokens": [
+   {
+    "name": "raio-sm",
+    "value": "8px",
+    "usage": "Slots de inventário e avisos."
+   },
+   {
+    "name": "raio-md",
+    "value": "12px",
+    "usage": "Botões e campos de texto."
+   },
+   {
+    "name": "raio-lg",
+    "value": "20px",
+    "usage": "Cartões e painéis."
+   },
+   {
+    "name": "raio-xl",
+    "value": "32px",
+    "usage": "Peças grandes de composição, como a capa."
+   },
+   {
+    "name": "raio-pilula",
+    "value": "999px",
+    "usage": "Pílulas do HUD e botões redondos de toque."
+   }
+  ]
+ },
+ "shadow": {
+  "tokens": [
+   {
+    "name": "sombra-cartao",
+    "value": {
+     "noite": "0 20px 60px rgba(0,0,0,0.45)",
+     "dia": "0 12px 32px rgba(60,40,10,0.28)"
+    },
+    "usage": "Cartões flutuantes sobre o mapa ou sobre o fundo: papel, fim de partida."
+   },
+   {
+    "name": "sombra-hud",
+    "value": {
+     "noite": "0 2px 10px rgba(0,0,0,0.5)",
+     "dia": "0 2px 8px rgba(60,40,10,0.3)"
+    },
+    "usage": "Pílulas e avisos do HUD."
+   }
+  ]
+ }
+}
