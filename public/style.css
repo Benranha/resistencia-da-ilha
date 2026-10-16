@@ -39,6 +39,11 @@ button:active { transform: translateY(1px); }
 button.primary { background: var(--accent); border-color: var(--accent); color: #1a0f07; width: 100%; }
 button.ghost { background: transparent; }
 button.small { padding: 6px 12px; font-size: 13px; }
+button.danger { border-color: var(--bad); color: var(--bad); }
+button.danger:hover { background: rgba(226, 87, 76, .12); }
+#btn-leave { margin-top: 14px; width: 100%; }
+#picker-list { display: grid; gap: 8px; margin: 16px 0; }
+#picker-list button { width: 100%; text-align: left; }
 .sep { display: flex; align-items: center; gap: 10px; margin: 18px 0 4px; color: var(--sand-dim); font-size: 13px; }
 .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .error { color: var(--bad); min-height: 1.2em; margin: 12px 0 0; font-size: 14px; }

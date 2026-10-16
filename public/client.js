@@ -7,7 +7,7 @@
   const ITEM_LABEL = { piece: 'Peça do mapa', key: 'Chave do bote', kit: 'Kit médico', radio: 'Rádio quebrado' };
 
   let ws = null;
-  let S = { id: null, token: null, room: null, hostId: null, phase: 'menu', name: '' };
+  let S = { id: null, token: null, room: null, hostId: null, phase: 'menu', name: '', lobbyPlayers: [] };
   let map = null; let names = {}; let consts = {};
   let role = null; let team = [];
   let snap = null;
@@ -58,6 +58,7 @@
       case 'noise': addRipple(m); break;
       case 'chat': onChat(m); break;
       case 'end': onEnd(m); break;
+      case 'left': onLeft(); break;
       case 'error': $('menu-error').textContent = m.text; if (S.phase === 'menu') { wantConnect = false; try { ws.close(); } catch (e) { /* ignore */ } } break;
       default: break;
     }
@@ -84,8 +85,42 @@
   $('end-again').onclick = () => send({ t: 'rematch' });
   $('rc-ok').onclick = () => { $('role-card').hidden = true; };
 
+  function leaveRoom(newHost) { send({ t: 'leave', newHost }); }
+  function openHostPicker(others) {
+    const list = $('picker-list'); list.innerHTML = '';
+    for (const p of others) {
+      const b = document.createElement('button');
+      b.className = 'ghost';
+      b.textContent = p.name;
+      b.onclick = () => { $('host-picker').hidden = true; leaveRoom(p.id); };
+      list.appendChild(b);
+    }
+    $('host-picker').hidden = false;
+  }
+  $('btn-leave').onclick = () => {
+    const host = S.id === S.hostId;
+    const others = S.lobbyPlayers.filter((p) => p.id !== S.id);
+    if (host && others.length > 0) openHostPicker(others);
+    else leaveRoom();
+  };
+  $('picker-cancel').onclick = () => { $('host-picker').hidden = true; };
+
+  function onLeft() {
+    wantConnect = false;
+    try { ws.close(); } catch (e) { /* ignore */ }
+    const name = S.name;
+    S = { id: null, token: null, room: null, hostId: null, phase: 'menu', name, lobbyPlayers: [] };
+    try { localStorage.removeItem('rdi-session'); } catch (e) { /* ignore */ }
+    history.replaceState(null, '', '/');
+    $('host-picker').hidden = true;
+    $('menu-error').textContent = '';
+    $('code').value = '';
+    showScreen('menu');
+  }
+
   function renderLobby(m) {
     S.hostId = m.hostId;
+    S.lobbyPlayers = m.players;
     const ul = $('lobby-list'); ul.innerHTML = '';
     for (const p of m.players) {
       const li = document.createElement('li');
@@ -93,10 +128,13 @@
       ul.appendChild(li);
     }
     const host = S.id === m.hostId;
+    const others = m.players.filter((p) => p.id !== S.id);
     $('btn-start').hidden = !host || m.phase !== 'lobby';
     $('lobby-wait').hidden = host;
     $('end-again').hidden = !host;
     $('end-wait').hidden = host;
+    $('btn-leave').hidden = m.phase !== 'lobby';
+    $('btn-leave').textContent = host && others.length === 0 ? 'Fechar sala' : 'Deixar sala';
   }
 
   // ---------- jogo ----------

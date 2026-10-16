@@ -103,6 +103,30 @@ class Room {
     this.sendLobby();
   }
 
+  leaveLobby(ws, newHostId) {
+    const g = this.game;
+    if (g.phase !== 'lobby') return;
+    const p = g.players.get(ws.pid);
+    if (!p) return;
+    const wasHost = this.hostId === p.id;
+    if (this.clients.get(ws.pid) === ws) this.clients.delete(ws.pid);
+    g.removePlayer(p.id);
+    if (wasHost) {
+      const others = g.humans();
+      if (others.length > 0) {
+        const target = others.find((h) => h.id === newHostId);
+        this.hostId = target ? target.id : others[0].id;
+      } else {
+        this.hostId = null;
+      }
+    }
+    this.lastActive = Date.now();
+    send(ws, { t: 'left' });
+    ws.room = null; ws.pid = null;
+    if (this.clients.size === 0) { this.destroy(); return; }
+    this.sendLobby();
+  }
+
   start(ws) {
     const g = this.game;
     if (ws.pid !== this.hostId || g.phase !== 'lobby') return;
@@ -210,6 +234,7 @@ wss.on('connection', (ws) => {
       case 'chat': g.chat(ws.pid, m.text); break;
       case 'start': room.start(ws); break;
       case 'rematch': room.rematch(ws); break;
+      case 'leave': room.leaveLobby(ws, m.newHost); break;
       default: break;
     }
   });

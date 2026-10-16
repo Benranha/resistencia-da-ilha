@@ -44,6 +44,16 @@
       <p class="muted">Bots completam a sala até 9 jogadores. Os papéis são sorteados em segredo.</p>
       <button id="btn-start" class="primary" hidden>Começar partida</button>
       <p id="lobby-wait" class="muted">Aguardando o anfitrião começar...</p>
+      <button id="btn-leave" class="ghost small danger" hidden>Deixar sala</button>
+    </div>
+    <div id="host-picker" class="overlay" hidden>
+      <div class="card">
+        <p class="eyebrow">Antes de sair</p>
+        <h2>Escolha o novo anfitrião</h2>
+        <p class="muted">Você está saindo da sala. Alguém precisa assumir para a partida continuar.</p>
+        <div id="picker-list"></div>
+        <button id="picker-cancel" class="ghost small">Cancelar</button>
+      </div>
     </div>
   </section>
 

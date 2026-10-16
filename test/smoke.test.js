@@ -93,6 +93,35 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   assert.ok((await get(port, '/healthz')).body === 'ok');
   console.log('ok   - mensagens invalidas ignoradas');
 
+  // deixar sala: anfitriao escolhe substituto, convidado so sai
+  const rc = client(port); await rc.open; rc.send({ t: 'join', name: 'Rosa' });
+  const wrc = await rc.wait((m) => m.t === 'welcome');
+  const rd = client(port); await rd.open; rd.send({ t: 'join', name: 'Duda', room: wrc.room });
+  const wrd = await rd.wait((m) => m.t === 'welcome');
+  await rc.wait((m) => m.t === 'lobby' && m.players.length === 2);
+  rd.send({ t: 'leave' }); // convidado sai: anfitriao nao muda
+  const leftRd = await rd.wait((m) => m.t === 'left');
+  assert.ok(leftRd);
+  const lobAfterGuestLeft = await rc.wait((m) => m.t === 'lobby' && m.players.length === 1);
+  assert.strictEqual(lobAfterGuestLeft.hostId, wrc.id);
+  rc.send({ t: 'leave' }); // anfitriao sozinho: fecha a sala
+  await rc.wait((m) => m.t === 'left');
+  const re = client(port); await re.open; re.send({ t: 'join', name: 'X', room: wrc.room });
+  assert.strictEqual((await re.wait((m) => m.t === 'error')).text, 'Sala não encontrada.');
+  console.log('ok   - deixar sala (convidado sai sem afetar anfitriao) e fechar sala (anfitriao sozinho)');
+
+  // deixar sala escolhendo novo anfitriao
+  const rf = client(port); await rf.open; rf.send({ t: 'join', name: 'Fabio' });
+  const wrf = await rf.wait((m) => m.t === 'welcome');
+  const rg = client(port); await rg.open; rg.send({ t: 'join', name: 'Gil', room: wrf.room });
+  const wrg = await rg.wait((m) => m.t === 'welcome');
+  await rf.wait((m) => m.t === 'lobby' && m.players.length === 2);
+  rf.send({ t: 'leave', newHost: wrg.id });
+  await rf.wait((m) => m.t === 'left');
+  const lobNewHost = await rg.wait((m) => m.t === 'lobby' && m.players.length === 1);
+  assert.strictEqual(lobNewHost.hostId, wrg.id);
+  console.log('ok   - anfitriao deixa a sala escolhendo substituto');
+
   console.log('\nsmoke test passou');
   process.exit(0);
 })().catch((e) => { console.error('FAIL', e); process.exit(1); });
