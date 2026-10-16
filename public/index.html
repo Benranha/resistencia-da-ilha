@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b1d26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Resistência">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="stylesheet" href="/style.css">
+<title>A Resistência da Ilha</title>
+</head>
+<body>
+<main id="app">
+
+  <section id="screen-menu" class="screen active">
+    <div class="card">
+      <p class="eyebrow">Dedução social e sobrevivência</p>
+      <h1>A Resistência<br>da Ilha</h1>
+      <p class="lead">Nove sobreviventes chegam à praia. Só um bote e uma chave separam o mundo do apocalipse, e nem todos estão do seu lado.</p>
+      <label for="name">Seu nome</label>
+      <input id="name" maxlength="16" autocomplete="off" placeholder="Como te chamam?">
+      <div class="row">
+        <button id="btn-create" class="primary">Criar sala</button>
+      </div>
+      <div class="sep"><span>ou entre em uma sala</span></div>
+      <div class="row">
+        <input id="code" maxlength="4" autocomplete="off" placeholder="CÓDIGO" class="code-input">
+        <button id="btn-join">Entrar</button>
+      </div>
+      <p id="menu-error" class="error" role="alert"></p>
+    </div>
+  </section>
+
+  <section id="screen-lobby" class="screen">
+    <div class="card">
+      <p class="eyebrow">Sala</p>
+      <h2 id="lobby-code">----</h2>
+      <button id="btn-copy" class="ghost small">Copiar link de convite</button>
+      <ul id="lobby-list" class="players"></ul>
+      <p class="muted">Bots completam a sala até 9 jogadores. Os papéis são sorteados em segredo.</p>
+      <button id="btn-start" class="primary" hidden>Começar partida</button>
+      <p id="lobby-wait" class="muted">Aguardando o anfitrião começar...</p>
+    </div>
+  </section>
+
+  <section id="screen-game" class="screen">
+    <canvas id="view"></canvas>
+    <div id="hud">
+      <div id="hud-top-left" class="pill"><span id="hud-time">10:00</span><span class="dot"></span><span id="hud-alive">9 vivos</span><span id="hud-storm" hidden>Tempestade</span></div>
+      <div id="hud-role" class="pill role"></div>
+      <div id="hud-hint"></div>
+      <div id="hud-prog" hidden><div></div></div>
+      <div id="hud-grace" hidden></div>
+      <canvas id="minimap" width="180" height="112"></canvas>
+      <div id="hud-bottom">
+        <div id="hud-stamina"><div></div></div>
+        <div id="hud-inv"></div>
+        <div id="hud-keys">E pegar/usar &nbsp; G entregar &nbsp; Q habilidade &nbsp; R rádio &nbsp; Shift correr &nbsp; Enter conversar</div>
+      </div>
+      <ul id="hud-log"></ul>
+      <form id="chat-form" autocomplete="off"><input id="chat-input" maxlength="120" placeholder="Fale com quem está perto (Enter)"></form>
+    </div>
+
+    <div id="touch" hidden>
+      <div id="joy"><div id="knob"></div></div>
+      <div id="tbtns">
+        <button data-act="e" class="t big">E</button>
+        <button data-act="ability" class="t">Q</button>
+        <button data-act="give" class="t">G</button>
+        <button data-act="radio" class="t">R</button>
+        <button data-act="sprint" class="t">Correr</button>
+        <button data-act="chat" class="t">Chat</button>
+      </div>
+    </div>
+
+    <div id="role-card" class="overlay" hidden>
+      <div class="card">
+        <p class="eyebrow" id="rc-faction"></p>
+        <h2 id="rc-name"></h2>
+        <p id="rc-desc"></p>
+        <p id="rc-team" class="muted"></p>
+        <button id="rc-ok" class="primary">Entendi</button>
+      </div>
+    </div>
+
+    <div id="end-card" class="overlay" hidden>
+      <div class="card">
+        <p class="eyebrow" id="end-eyebrow"></p>
+        <h2 id="end-title"></h2>
+        <p id="end-reason"></p>
+        <ul id="end-roles" class="players"></ul>
+        <button id="end-again" class="primary" hidden>Jogar de novo</button>
+        <p id="end-wait" class="muted" hidden>Aguardando o anfitrião...</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script src="/client.js"></script>
+</body>
+</html>

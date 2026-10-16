@@ -1,0 +1,17 @@
+{
+  "name": "A Resistência da Ilha",
+  "short_name": "Resistência",
+  "description": "Dedução social e sobrevivência online. Escape da ilha antes do apocalipse.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0b1d26",
+  "theme_color": "#0b1d26",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

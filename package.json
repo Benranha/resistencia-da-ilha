@@ -1,0 +1,19 @@
+{
+  "name": "resistencia-da-ilha",
+  "version": "0.1.0",
+  "description": "Prototipo web (PWA) de dedução social e sobrevivência: A Resistência da Ilha",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "icons": "node scripts/make-icons.js",
+    "test": "node test/game.test.js && node test/smoke.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "ws": "^8.22.0"
+  }
+}
