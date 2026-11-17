@@ -38,10 +38,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const man = await get(port, '/manifest.webmanifest'); assert.strictEqual(man.status, 200); assert.ok(JSON.parse(man.body).icons.length >= 2);
   assert.strictEqual((await get(port, '/sw.js')).status, 200);
   assert.strictEqual((await get(port, '/client.js')).status, 200);
+  const clientJs = await get(port, '/client.js'); assert.ok(clientJs.body.includes("import { IslandScene } from './game3d.js'"));
+  const game3d = await get(port, '/game3d.js'); assert.strictEqual(game3d.status, 200); assert.ok(game3d.body.includes('export class IslandScene'));
+  assert.strictEqual((await get(port, '/vendor/three/three.module.js')).status, 200);
+  assert.strictEqual((await get(port, '/vendor/three/three.core.js')).status, 200);
   const ic = await get(port, '/icons/icon-192.png'); assert.strictEqual(ic.type, 'image/png');
   assert.ok([403, 404].includes((await get(port, '/..%2f..%2fpackage.json')).status), 'path traversal deve ser bloqueado');
   assert.strictEqual((await get(port, '/healthz')).body, 'ok');
-  console.log('ok   - arquivos estaticos, manifest, service worker e icones');
+  console.log('ok   - arquivos estaticos, módulos 3D locais, manifest, service worker e icones');
 
   // sala + lobby
   const a = client(port); await a.open; a.send({ t: 'join', name: 'Ana' });

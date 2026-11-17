@@ -1,6 +1,7 @@
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
+COPY scripts/copy-three.js ./scripts/copy-three.js
 RUN npm ci --omit=dev
 COPY . .
 ENV NODE_ENV=production
