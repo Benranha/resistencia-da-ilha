@@ -58,7 +58,7 @@
   </section>
 
   <section id="screen-game" class="screen">
-    <canvas id="view"></canvas>
+    <div id="view" aria-label="Mundo 3D da partida"></div>
     <div id="hud">
       <div id="hud-top-left" class="pill"><span id="hud-time">10:00</span><span class="dot"></span><span id="hud-alive">9 vivos</span><span id="hud-storm" hidden>Tempestade</span></div>
       <div id="hud-role" class="pill role"></div>
@@ -110,6 +110,6 @@
   </section>
 
 </main>
-<script src="/client.js"></script>
+<script type="module" src="/client.js"></script>
 </body>
 </html>

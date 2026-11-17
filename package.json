@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
+    "postinstall": "node scripts/copy-three.js",
     "icons": "node scripts/make-icons.js",
     "test": "node test/game.test.js && node test/smoke.test.js"
   },
@@ -15,6 +16,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "three": "0.187.0",
     "ws": "^8.22.0"
   }
 }

@@ -56,8 +56,17 @@ button.danger:hover { background: rgba(226, 87, 76, .12); }
 #lobby-code { letter-spacing: .3em; font-size: 44px; margin-bottom: 6px; }
 
 /* HUD */
-#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-#hud { position: absolute; inset: 0; pointer-events: none; font-size: 14px; }
+#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; overflow: hidden; }
+#view > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.world-labels { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.world-label { position: absolute; max-width: 170px; transform: translate(-50%, -100%); padding: 3px 7px; border: 1px solid rgba(232,214,168,.28); border-radius: 999px; background: rgba(11,29,38,.76); color: #f2e7ca; font-size: 12px; line-height: 1.25; white-space: nowrap; text-shadow: 0 1px 2px #000; }
+.world-label.self { border-color: var(--warn); color: #ffe7a1; }
+.world-label.dead { opacity: .62; }
+.world-label[data-chat]:not([data-chat=""])::after { content: attr(data-chat); position: absolute; left: 50%; bottom: calc(100% + 5px); transform: translateX(-50%); max-width: min(240px, 60vw); padding: 6px 9px; border-radius: 9px; background: rgba(248,239,216,.96); color: #172a2e; white-space: normal; text-align: center; box-shadow: 0 3px 12px rgba(0,0,0,.24); }
+.world-vignette { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 50% 54%, transparent 0 28%, rgba(4,10,14,.18) 48%, rgba(4,10,14,.86) 100%); }
+.world-vignette.storm { background: radial-gradient(ellipse at 50% 54%, rgba(8,15,27,.1) 0 16%, rgba(8,15,27,.48) 42%, rgba(4,10,14,.94) 100%); }
+.world-vignette.spectator { background: radial-gradient(ellipse at 50% 54%, transparent 0 46%, rgba(4,10,14,.55) 100%); }
+#hud { position: absolute; inset: 0; z-index: 4; pointer-events: none; font-size: 14px; }
 .pill { background: rgba(11, 29, 38, .72); backdrop-filter: blur(4px); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; display: flex; gap: 8px; align-items: center; }
 #hud-top-left { position: absolute; left: 12px; top: calc(12px + var(--safe-t)); font-variant-numeric: tabular-nums; }
 #hud-top-left .dot { width: 4px; height: 4px; background: var(--sand-dim); border-radius: 50%; }
