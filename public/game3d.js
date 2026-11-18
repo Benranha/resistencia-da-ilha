@@ -25,12 +25,16 @@ function colorFor(id) {
   return new THREE.Color(`hsl(${hue} 48% 53%)`);
 }
 
-function mapShape(points) {
+function makeShape(points) {
   const shape = new THREE.Shape();
   shape.moveTo(points[0].x, -points[0].y);
   for (let i = 1; i < points.length; i++) shape.lineTo(points[i].x, -points[i].y);
   shape.closePath();
-  const geometry = new THREE.ShapeGeometry(shape, 1);
+  return shape;
+}
+
+function mapShape(points) {
+  const geometry = new THREE.ShapeGeometry(makeShape(points), 1);
   geometry.rotateX(-Math.PI / 2);
   return geometry;
 }
@@ -256,7 +260,7 @@ export class IslandScene {
     this.scene.add(water);
 
     const outline = coastPoints(world);
-    const coast = mapShape(outline);
+    const coast = makeShape(outline);
     const island = new THREE.Mesh(
       new THREE.ExtrudeGeometry(coast, { depth: 18, bevelEnabled: true, bevelSegments: 1, steps: 1, bevelSize: 9, bevelThickness: 3 }),
       new THREE.MeshStandardMaterial({ color: '#3b694b', roughness: 1, flatShading: true }),

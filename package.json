@@ -8,7 +8,7 @@
     "dev": "node --watch src/server.js",
     "postinstall": "node scripts/copy-three.js",
     "icons": "node scripts/make-icons.js",
-    "test": "node test/game.test.js && node test/smoke.test.js"
+    "test": "node test/three-geometry.test.js && node test/game.test.js && node test/smoke.test.js"
   },
   "engines": {
     "node": ">=20"
